@@ -48,6 +48,10 @@ class Renderer(object):
         self.projection = glm.perspective(glm.radians(60), self.WIDTH / self.HEIGHT, 0.1, 1000)
 
         self.cube_position = glm.vec3(0, 0, 0)
+        self.camera_position = glm.vec3(0, 0, -2)
+        self.camera_pitch_degrees = 0
+        self.camera_yaw_degrees = 0
+        self.camera_roll_degrees = 0
 
     def wireframe_mode(self):
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
@@ -57,6 +61,17 @@ class Renderer(object):
 
     def translate_cube(self, x, y, z):
         self.cube_position = glm.vec3(x, y, z)
+
+    def translate_camera(self, x, y, z):
+        self.camera_position = glm.vec3(x, y, z)
+
+    def rotate_camera(self, pitch, yaw, roll):
+        self.camera_pitch_degrees = pitch
+        self.camera_yaw_degrees = yaw
+        self.camera_roll_degrees = roll
+
+    def deg2rad(self, angle):
+        return (angle * np.pi) / 180
 
     def set_shaders(self, vertex_shader, fragment_shader):
         if vertex_shader is not None or fragment_shader is not None:
@@ -104,10 +119,11 @@ class Renderer(object):
         scale   =   glm.scale(i, glm.vec3(1, 1, 1))
         model   =   translate * rotate * scale
 
-        camera_translate    =   glm.translate(i, glm.vec3(0, 0, 3))
-        camera_pitch        =   glm.rotate(i, glm.radians(0), glm.vec3(1, 0, 0))
-        camera_yaw          =   glm.rotate(i, glm.radians(0), glm.vec3(0, 1, 0))
-        camera_roll         =   glm.rotate(i, glm.radians(0), glm.vec3(0, 0, 1))
+        camera_translate    =   glm.translate(i, self.camera_position)
+
+        camera_pitch        =   glm.rotate(i, glm.radians(self.camera_pitch_degrees), glm.vec3(1, 0, 0))
+        camera_yaw          =   glm.rotate(i, glm.radians(self.camera_yaw_degrees), glm.vec3(0, 1, 0))
+        camera_roll         =   glm.rotate(i, glm.radians(self.camera_roll_degrees), glm.vec3(0, 0, 1))
         camera_rotate       =   camera_pitch * camera_yaw * camera_roll
 
         view = glm.inverse(camera_translate * camera_rotate)

@@ -18,11 +18,18 @@ renderer.create_objects()
 
 cube_x = 0
 cube_z = 0
+camera_x = 0
+camera_z = 3
+camera_pitch = 0
+camera_yaw = 0
+camera_roll = 0
+
 
 isRunning = True
 
 while isRunning: 
     keys = pygame.key.get_pressed()
+    ##  CUBE TRANSLATION
     if keys[pygame.K_a]:
         cube_x -= 2 * delta_time
     
@@ -34,6 +41,38 @@ while isRunning:
     
     if keys[pygame.K_s]:
         cube_z += 2 * delta_time
+
+    ##  CAMERA TRANSLATION
+    if keys[pygame.K_UP]:
+        camera_z += 2 * delta_time
+    
+    if keys[pygame.K_DOWN]:
+        camera_z -= 2 * delta_time
+    
+    if keys[pygame.K_LEFT]:
+        camera_x -= 2 * delta_time
+    
+    if keys[pygame.K_RIGHT]:
+        camera_x += 2 * delta_time
+
+    ##  CAMERA ROTATION
+    if keys[pygame.K_q]:
+        camera_yaw += 20 * delta_time
+    
+    if keys[pygame.K_e]:
+        camera_yaw -= 20 * delta_time
+
+    if keys[pygame.K_r]:
+        camera_pitch += 20 * delta_time
+    
+    if keys[pygame.K_f]:
+        camera_pitch -= 20 * delta_time
+    
+    if keys[pygame.K_x]:
+        camera_roll -= 20 * delta_time
+
+    if keys[pygame.K_c]:
+        camera_roll += 20 * delta_time
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -50,6 +89,8 @@ while isRunning:
                 isRunning = False
 
     renderer.translate_cube(cube_x, 0, cube_z)
+    renderer.translate_camera(camera_x, 0, camera_z)
+    renderer.rotate_camera(camera_pitch, camera_yaw, camera_roll)
 
     renderer.render()
 
